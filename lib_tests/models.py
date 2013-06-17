@@ -66,6 +66,32 @@ class Venues(models.Model):
         data = data.drop_duplicates(cols='city')
         data = data.set_index('rank')
         return data
+    
+    @classmethod
+    def get_top_cities(cls):
+        from django.db import connection, transaction
+        cur = connection.cursor()
+        cur.execute('select count(*), country from Venues group by country order by count(*) DESC')
+        data = pd.DataFrame(cur.fetchall())
+        return list(data[1])[:10]
+    
+    @classmethod
+    def get_json_for_country(cls, country):
+        from django.db import connection, transaction
+        cur = connection.cursor()
+        
+        cur.execute('select count(*), city, country from Venues where country=%s group by city order by count(*) DESC', [country])
+        data = pd.DataFrame(cur.fetchall())
+        data.columns = ['count','city', 'country']
+        data = data[data.city!='']
+        clean = lambda x:x.split(',')[0]
+        data.city = data.city.apply(clean)
+        data = data.groupby('city')['count'].sum()
+        data = pd.DataFrame(data)
+        data = data.sort_index(by='count', ascending=False).reset_index()
+        
+        return data
+     
         
 
 class Events(models.Model):

@@ -9,7 +9,8 @@ urlpatterns = patterns('',
     url(r'^$', 'vis.views.home', name='home'),
     url(r'^vis.html', 'lib_tests.views.home', name='lib_tests'),
     url(r'^get_json', 'lib_tests.views.get_json', name='lib_tests'),
-
+    url(r'^country_(?P<country>[\w\s]+)', 'lib_tests.views.get_json_for_country', name='lib_tests'),
+    
     #url(r'^vis/', include('vis.lib_tests.urls')),
     # url(r'^vis/', include('vis.foo.urls')),
 

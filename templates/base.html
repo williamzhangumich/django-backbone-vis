@@ -24,7 +24,7 @@
         padding-top: 20px;
         padding-bottom: 60px;
       }
-
+	  
       /* Custom container */
       .container {
         margin: 0 auto;
@@ -36,7 +36,7 @@
 
       /* Main marketing message and sign up button */
       .jumbotron {
-        margin: 80px 0;
+        margin: 40px 0;
         text-align: center;
       }
       .jumbotron h1 {
@@ -48,8 +48,8 @@
         line-height: 1.25;
       }
       .jumbotron .btn {
-        font-size: 21px;
-        padding: 14px 24px;
+        font-size: 15px;
+        padding: 10px 15px;
       }
 
       /* Supporting marketing content */
@@ -89,9 +89,9 @@
         border-right: 0;
         border-radius: 0 3px 3px 0;
       }
-    
 </style>
-
+{% block datasource %}
+{% endblock %}
 </head>
 
 <body>
@@ -102,8 +102,8 @@
           <div class="navbar-inner">
             <div class="container">
               <ul class="nav">
-                <li class="active"><a href="#">Home</a></li>
-                <li><a href="#">Projects</a></li>
+                <li class="active"><a href="/">Home</a></li>
+                <li><a href="/vis.html">Vis</a></li>
                 <li><a href="#">Services</a></li>
                 <li><a href="#">Downloads</a></li>
 
@@ -112,18 +112,13 @@
           </div>
         </div><!-- /.navbar -->
       </div>
-
-
-	  
-	  
+		
       <!-- Jumbotron -->
-      <div class="jumbotron">
-      	
       	{% block content %}
 		{% endblock %}
-      	
-      </div>
 
+		{% block vis %}
+		{% endblock %}
       <hr>
 
       <!-- Example row of columns -->

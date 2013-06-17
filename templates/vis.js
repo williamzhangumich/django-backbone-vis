@@ -1,4 +1,5 @@
 var data2 = {%autoescape off%}{{data}}{%endautoescape%}
+var top_cities = {%autoescape off%}{{top_cities}}{%endautoescape%}
     
 $(document).ready(function() {
 	/*
@@ -18,17 +19,17 @@ $(document).ready(function() {
 	// Highcharts
 	///////////////
 	
-	d3.select('body').append('div').attr('id','highchart')
+	d3.select('#hc_cities').append('div').attr('id','highchart')
 					 .attr('style','min-width: 400px; height: 400px; margin: 0 auto');
-	var cities = _.map(data, function(row){return row['city']})
-	var values = _.map(data, function(row){return row['count']})
+	var cities = _.map(data, function(row){return row['city']});
+	var values = _.map(data, function(row){return row['count']});
 	
 	$('#highchart').highcharts({
             chart: {
                 type: 'column'
             },
             title: {
-                text: 'Concert Venues'
+                text: 'Concert Venues in World Cities'
             },
             subtitle: {
                 text: 'test'
@@ -83,14 +84,98 @@ $(document).ready(function() {
 		         }).attr('style','stroke:black; fill:purple; stroke-width:3px')
 		  	})
 
-
+    /*
+     * button sets
+     */
+    
+    var city_buttons = d3.select('#hc_by_country').append('div').attr('class', 'btn-group');
+    city_buttons.selectAll('button').data(top_cities).enter()
+                .append('button').attr('class','btn').text(function(d){
+                    return d;
+                });
+    
+    d3.select('#hc_by_country').append('div').attr('id','highchart_country')
+    
+    /*
+     * by country
+     */
+    
+    var vis_for_country = function(country){
+        $.get('/country_'+country, function(data){
+                data = JSON.parse(data);
+                data = data.slice(0,21);
+                d3.select('#highchart_country')
+                     .attr('style','min-width: 400px; height: 400px; margin: 0 auto');
+                var cities = _.map(data, function(row){return row['city']});
+                var values = _.map(data, function(row){return row['count']});
+                
+                $('#highchart_country').highcharts({
+                        chart: {
+                            type: 'column'
+                        },
+                        title: {
+                            text: 'Concert Venues in Top '+ country +' cities'
+                        },
+                        subtitle: {
+                            text: 'test'
+                        },
+                        xAxis: {
+                            categories: cities,
+                            labels: {
+                                rotation: -45,
+                                align: 'right',
+                                style: {
+                                    fontSize: '13px',
+                                    fontFamily: 'Verdana, sans-serif'
+                                }
+                            }
+                        },
+                        yAxis: {
+                            min: 0,
+                            title: {
+                                text: 'number of venues'
+                            }
+                        },
+                        tooltip: {
+                            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                                '<td style="padding:0"><b>{point.y:.1f} venues</b></td></tr>',
+                            footerFormat: '</table>',
+                            shared: true,
+                            useHTML: true
+                        },
+                        plotOptions: {
+                            column: {
+                                pointPadding: 0.2,
+                                borderWidth: 0
+                            }
+                        },
+                        series: [{
+                            name: 'Venues',
+                            data: values
+                        }]
+                    });
+                    
+        })
+    };
+    
+    
+    city_buttons.selectAll('button').on('click',function(d){
+        vis_for_country(d);
+    });
+    
+    
+    vis_for_country('United States');
+    
     //////////////
     // hist, d3
     //////////////
-                
+    
+    /*  
     var svg_height = 400;
     var svg_width = $(document).width()*0.8
-    var svg = d3.select('body').append('svg')
+    var svg = d3.select('#d3_cities')
+                .append('svg')
                 .attr('width', svg_width)
                 .attr('height', svg_height)
                 .attr('id','barplot');
@@ -123,7 +208,10 @@ $(document).ready(function() {
     }).text(function(d){ return d['city']
     }
     );
-
+    
+    */
+    
+    
   /////////////////
   // Circles
   /////////////////
