@@ -102,12 +102,11 @@ $(document).ready(function() {
     
     var vis_for_country = function(country){
         $.get('/country_'+country, function(data){
-                data = JSON.parse(data);
-                data = data.slice(0,21);
+                //data = JSON.parse(data);
                 d3.select('#highchart_country')
                      .attr('style','min-width: 400px; height: 400px; margin: 0 auto');
-                var cities = _.map(data, function(row){return row['city']});
-                var values = _.map(data, function(row){return row['count']});
+                var cities = data['cities'].slice(0,21);
+                var values = data['count'].slice(0,21);
                 
                 $('#highchart_country').highcharts({
                         chart: {

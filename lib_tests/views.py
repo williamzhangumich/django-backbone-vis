@@ -38,10 +38,18 @@ def get_json_for_country(request, country):
     #import ipdb; ipdb.set_trace()
     data = Venues.get_json_for_country(country)
     output = []
+    
+    counts = []
+    for a in data['count']: counts.append(int(a))
+    
+    #import ipdb; ipdb.set_trace()
+    output = json.dumps({'cities':list(data['city']), 'count':counts})
+    '''
     data = data.T
     for k in data:
         row = data[k]
         output.append({'city': row['city'], 'count':row['count']})
     output = json.dumps(output)
-    return HttpResponse(output) 
+    '''
+    return HttpResponse(output, mimetype='application/json') 
     
